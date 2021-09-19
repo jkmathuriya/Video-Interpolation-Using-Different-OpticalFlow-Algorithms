@@ -44,7 +44,6 @@ def multiscale_lukas_kanade_flow(img0,img2,N,levels):
     a2=cv2.pyrUp(a)
     b2=cv2.pyrUp(b)
 
-
     for i in range(levels-2,-1,-1):
 
         [a,b]=iterative_lukas_kanade_flow(pyr0[0:shapes0[i][0],0:shapes0[i][1],i],pyr2[0:shapes0[i][0],0:shapes0[i][1],i],N,[a2,b2])
