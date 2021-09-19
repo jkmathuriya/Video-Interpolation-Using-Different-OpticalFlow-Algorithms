@@ -4,16 +4,16 @@ import numpy as np
 import scipy.interpolate
 
 
-def interpolate1(firstImage, secondImage, forward_flow,backward_flow):
+def interpolate1(img0, img2, forward_flow,backward_flow):
 
-    height, width = firstImage.shape
+    height, width = img0.shape
 
-    uf, vf = forward_flow
+    af, bf = forward_flow
 
-    ub, vb = backward_flow
+    ab, bb = backward_flow
 
     t = 0.5
-    ut = np.full([uf.shape[0], uf.shape[1], 2], np.nan)
+    ut = np.full([af.shape[0], af.shape[1], 2], np.nan)
 
     # Occlusion detection
     occ_detect = True
@@ -24,8 +24,8 @@ def interpolate1(firstImage, secondImage, forward_flow,backward_flow):
     xx = np.broadcast_to(np.arange(width), (height, width))
     yy = np.broadcast_to(np.arange(height)[:, None], (height, width))
 
-    xt = np.round(xx + t * uf)
-    yt = np.round(yy + t * vf)
+    xt = np.round(xx + t * af)
+    yt = np.round(yy + t * bf)
 
     for i in range(height):
         for j in range(width):
@@ -34,49 +34,49 @@ def interpolate1(firstImage, secondImage, forward_flow,backward_flow):
 
             if i_ind_image >= 0 and i_ind_image < height and j_ind_image >= 0 and j_ind_image < width:
                 if occ_detect:
-                    e = np.square(int(secondImage[i_ind_image, j_ind_image]) - int(firstImage[i, j]))
+                    e = np.square(int(img2[i_ind_image, j_ind_image]) - int(img0[i, j]))
                     s = np.sum(e)
                     #print(e)
                     if s < similarity[i_ind_image, j_ind_image]:
-                        ut[i_ind_image, j_ind_image, 0] = uf[i, j]
-                        ut[i_ind_image, j_ind_image, 1] = vf[i, j]
+                        ut[i_ind_image, j_ind_image, 0] = af[i, j]
+                        ut[i_ind_image, j_ind_image, 1] = bf[i, j]
                         similarity[i_ind_image, j_ind_image] = s
                 else:
-                    ut[i_ind_image, j_ind_image, 0] = uf[i, j]
-                    ut[i_ind_image, j_ind_image, 1] = vf[i, j]
+                    ut[i_ind_image, j_ind_image, 0] = af[i, j]
+                    ut[i_ind_image, j_ind_image, 1] = bf[i, j]
 
     uti = outside_in_fill(ut)
 
     # Occlusion masks
-    occlusion_first = np.zeros_like(firstImage)
-    occlusion_second = np.zeros_like(secondImage)
+    occlusion_first = np.zeros_like(img0)
+    occlusion_second = np.zeros_like(img2)
 
-    occlusion_x1 = np.round(xx + uf).astype(np.int)
-    occlusion_y1 = np.round(yy + vf).astype(np.int)
+    occlusion_x1 = np.round(xx + af).astype(np.int)
+    occlusion_y1 = np.round(yy + bf).astype(np.int)
 
     occlusion_x1 = np.clip(occlusion_x1, 0, height - 1)
     occlusion_y1 = np.clip(occlusion_y1, 0, width - 1)
 
     for i in range(occlusion_first.shape[0]):
         for j in range(occlusion_first.shape[1]):
-            if np.abs(uf[i, j] + ub[occlusion_x1[i, j], occlusion_y1[i, j]]) > 0.5:
+            if np.abs(af[i, j] + ab[occlusion_x1[i, j], occlusion_y1[i, j]]) > 0.5:
                 occlusion_first[i, j] = 1
 
-            if np.abs(vf[i, j] + vb[occlusion_x1[i, j], occlusion_y1[i, j]]) > 0.5:
+            if np.abs(bf[i, j] + bb[occlusion_x1[i, j], occlusion_y1[i, j]]) > 0.5:
                 occlusion_first[i, j] = 1
 
-    occlusion_x1 = np.round(xx + ub).astype(np.int)
-    occlusion_y1 = np.round(yy + vb).astype(np.int)
+    occlusion_x1 = np.round(xx + ab).astype(np.int)
+    occlusion_y1 = np.round(yy + bb).astype(np.int)
 
     occlusion_x1 = np.clip(occlusion_x1, 0, height - 1)
     occlusion_y1 = np.clip(occlusion_y1, 0, width - 1)
 
     for i in range(occlusion_second.shape[0]):
         for j in range(occlusion_second.shape[1]):
-            if np.abs(ub[i, j] + uf[occlusion_x1[i, j], occlusion_y1[i, j]]) > 0.5:
+            if np.abs(ab[i, j] + af[occlusion_x1[i, j], occlusion_y1[i, j]]) > 0.5:
                 occlusion_second[i, j] = 1
 
-            if np.abs(vb[i, j] + vf[occlusion_x1[i, j], occlusion_y1[i, j]]) > 0.5:
+            if np.abs(bb[i, j] + bf[occlusion_x1[i, j], occlusion_y1[i, j]]) > 0.5:
                 occlusion_second[i, j] = 1
 
     # Intermediate image indices
@@ -93,9 +93,9 @@ def interpolate1(firstImage, secondImage, forward_flow,backward_flow):
     yt1 = np.clip(img1_for_y, 0, width - 1)
 
     # Interpolate the images according to occlusion masks
-    It = np.zeros(firstImage.shape)
-    image1_interp = scipy.interpolate.RectBivariateSpline(np.arange(width), np.arange(height), firstImage.T)
-    image2_interp = scipy.interpolate.RectBivariateSpline(np.arange(width), np.arange(height), secondImage.T)
+    It = np.zeros(img0.shape)
+    image1_interp = scipy.interpolate.RectBivariateSpline(np.arange(width), np.arange(height), img0.T)
+    image2_interp = scipy.interpolate.RectBivariateSpline(np.arange(width), np.arange(height), img2.T)
 
     for i in range(It.shape[0]):
         for j in range(It.shape[1]):

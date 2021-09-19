@@ -89,15 +89,15 @@ if __name__=="__main__":
         img=interpolate1(img0,img2,forward_flow,backward_flow)
         temp = "./Results/Horn_schunk_results/corridor/interpolated_frame/interpolated_" + str(i+1) + ".png"
         cv2.imwrite(temp, img)
-        interpolated_frame_scores.horn_schunk_ssim[i + 1] = ssim(img1, img * 255)
-        interpolated_frame_scores.horn_schunk_psnr[i + 1] = psnr(img1, img * 255)
+        interpolated_frame_scores.horn_schunk_ssim[i + 1] = ssim(img1, img)
+        interpolated_frame_scores.horn_schunk_psnr[i + 1] = psnr(img1, img)
 
 
 
 
         # Calculating flow using multiscale horn schunk
-        forward_flow, forward_grad = multiscale_horn_schunk_flow(img0, img2, lambada, max_iter, epsilon,5)
-        backward_flow, backward_grad = multiscale_horn_schunk_flow(img2, img0, lambada, max_iter, epsilon,5)
+        forward_flow, forward_grad = multiscale_horn_schunk_flow(img0, img2, lambada, max_iter, epsilon,4)
+        backward_flow, backward_grad = multiscale_horn_schunk_flow(img2, img0, lambada, max_iter, epsilon,4)
 
         # forward prediction
         img = warp(img0, forward_flow, forward_grad)
@@ -117,8 +117,8 @@ if __name__=="__main__":
         img=interpolate1(img0,img2,forward_flow,backward_flow)
         temp = "./Results/Multiscale_Horn_schunk_results/corridor/interpolated_frame/interpolated_" + str(i+1) + ".png"
         cv2.imwrite(temp, img)
-        interpolated_frame_scores.multiscale_horn_schunk_ssim[i + 1] = ssim(img1, img * 255)
-        interpolated_frame_scores.multiscale_horn_schunk_psnr[i + 1] = psnr(img1, img * 255)
+        interpolated_frame_scores.multiscale_horn_schunk_ssim[i + 1] = ssim(img1, img)
+        interpolated_frame_scores.multiscale_horn_schunk_psnr[i + 1] = psnr(img1, img)
 
 
 
@@ -143,14 +143,14 @@ if __name__=="__main__":
         img = interpolate1(img0, img2, forward_flow, backward_flow)
         temp = "./Results/Lukas_kanade_results/corridor/interpolated_frame/interpolated_" + str(i + 1) + ".png"
         cv2.imwrite(temp, img)
-        interpolated_frame_scores.lukas_kanade_ssim[i + 1] = ssim(img1, img * 255)
-        interpolated_frame_scores.lukas_kanade_psnr[i + 1] = psnr(img1, img * 255)
+        interpolated_frame_scores.lukas_kanade_ssim[i + 1] = ssim(img1, img)
+        interpolated_frame_scores.lukas_kanade_psnr[i + 1] = psnr(img1, img)
 
 
 
         # Calculating flow using multiscale Lukas kanade
-        forward_flow, forward_grad = multiscale_lukas_kanade_flow(img0, img2,9, 5)
-        backward_flow, backward_grad = multiscale_lukas_kanade_flow(img2, img0,9, 5)
+        forward_flow, forward_grad = multiscale_lukas_kanade_flow(img0, img2,9, 4)
+        backward_flow, backward_grad = multiscale_lukas_kanade_flow(img2, img0,9, 4)
 
         # forward prediction
         img = warp(img0, forward_flow, forward_grad)
@@ -169,13 +169,13 @@ if __name__=="__main__":
         img = interpolate1(img0, img2, forward_flow, backward_flow)
         temp = "./Results/Multiscale_Lukas_kanade_results/corridor/interpolated_frame/interpolated_" + str(i + 1) + ".png"
         cv2.imwrite(temp, img)
-        interpolated_frame_scores.multiscale_lukas_kanade_ssim[i + 1] = ssim(img1, img * 255)
-        interpolated_frame_scores.multiscale_lukas_kanade_psnr[i + 1] = psnr(img1, img * 255)
+        interpolated_frame_scores.multiscale_lukas_kanade_ssim[i + 1] = ssim(img1, img)
+        interpolated_frame_scores.multiscale_lukas_kanade_psnr[i + 1] = psnr(img1, img)
 
     ## save scores in results/SSIM_PSNR_Scores/corridor
-    forward_pred_scores.to_csv("./Results/SSIM_PSNR_Scores/corridor/forward_pred_scores.csv")
-    backward_pred_scores.to_csv("./Results/SSIM_PSNR_Scores/corridor/backward_pred_scores.csv")
-    interpolated_frame_scores.to_csv("./Results/SSIM_PSNR_Scores/corridor/interpolated_frame_scores.csv")
+    forward_pred_scores.to_csv("./Results/SSIM_PSNR_Scores/corridor/forward_pred_scores4.csv")
+    backward_pred_scores.to_csv("./Results/SSIM_PSNR_Scores/corridor/backward_pred_scores4.csv")
+    interpolated_frame_scores.to_csv("./Results/SSIM_PSNR_Scores/corridor/interpolated_frame_scores4.csv")
 
 
     # Creating dataframe for scores (sphere dataset)
@@ -235,14 +235,14 @@ if __name__=="__main__":
         img = interpolate1(img0, img2, forward_flow, backward_flow)
         temp = "./Results/Horn_schunk_results/sphere/interpolated_frame/interpolated_" + str(i + 1) + ".png"
         cv2.imwrite(temp, img)
-        interpolated_frame_scores.horn_schunk_ssim[i+1]=ssim(img1,img*255)
-        interpolated_frame_scores.horn_schunk_psnr[i + 1] = psnr(img1, img * 255)
+        interpolated_frame_scores.horn_schunk_ssim[i+1]=ssim(img1,img)
+        interpolated_frame_scores.horn_schunk_psnr[i + 1] = psnr(img1, img)
 
 
 
         # Calculating flow using multiscale horn schunk
         forward_flow, forward_grad = multiscale_horn_schunk_flow(img0, img2, lambada, max_iter, epsilon,4)
-        backward_flow, backward_grad = multiscale_horn_schunk_flow(img2, img0, lambada, max_iter, epsilon,4 )
+        backward_flow, backward_grad = multiscale_horn_schunk_flow(img2, img0, lambada, max_iter, epsilon,4)
 
         # forward prediction
         img = warp(img0, forward_flow, forward_grad)
@@ -260,8 +260,8 @@ if __name__=="__main__":
         img = interpolate1(img0, img2, forward_flow, backward_flow)
         temp = "./Results/Multiscale_Horn_schunk_results/sphere/interpolated_frame/interpolated_" + str(i + 1) + ".png"
         cv2.imwrite(temp, img)
-        interpolated_frame_scores.multiscale_horn_schunk_ssim[i + 1] = ssim(img1, img * 255)
-        interpolated_frame_scores.multiscale_horn_schunk_psnr[i + 1] = psnr(img1, img * 255)
+        interpolated_frame_scores.multiscale_horn_schunk_ssim[i + 1] = ssim(img1, img)
+        interpolated_frame_scores.multiscale_horn_schunk_psnr[i + 1] = psnr(img1, img)
 
 
 
@@ -279,14 +279,14 @@ if __name__=="__main__":
         img = warp(img2, backward_flow, backward_grad)
         cv2.imwrite("./Results/Lukas_kanade_results/sphere/backward_prediction/backward_pred_"+str(i)+".png", img*255)
         backward_pred_scores.lukas_kanade_ssim[i] = ssim(img0, img * 255)
-        backward_pred_scores.lukas_kanade_psnr[i ] = psnr(img0, img * 255)
+        backward_pred_scores.lukas_kanade_psnr[i] = psnr(img0, img * 255)
 
         # Interpolated
         img = interpolate1(img0, img2, forward_flow, backward_flow)
         temp = "./Results/Lukas_kanade_results/sphere/interpolated_frame/interpolated_" + str(i + 1) + ".png"
         cv2.imwrite(temp, img)
-        interpolated_frame_scores.lukas_kanade_ssim[i + 1] = ssim(img1, img * 255)
-        interpolated_frame_scores.lukas_kanade_psnr[i + 1] = psnr(img1, img * 255)
+        interpolated_frame_scores.lukas_kanade_ssim[i + 1] = ssim(img1, img )
+        interpolated_frame_scores.lukas_kanade_psnr[i + 1] = psnr(img1, img )
 
 
 
@@ -312,12 +312,12 @@ if __name__=="__main__":
         img = interpolate1(img0, img2, forward_flow, backward_flow)
         temp = "./Results/Multiscale_Lukas_kanade_results/sphere/interpolated_frame/interpolated_" + str(i + 1) + ".png"
         cv2.imwrite(temp, img)
-        interpolated_frame_scores.multiscale_lukas_kanade_ssim[i + 1] = ssim(img1, img * 255)
-        interpolated_frame_scores.multiscale_lukas_kanade_psnr[i + 1] = psnr(img1, img * 255)
+        interpolated_frame_scores.multiscale_lukas_kanade_ssim[i + 1] = ssim(img1, img )
+        interpolated_frame_scores.multiscale_lukas_kanade_psnr[i + 1] = psnr(img1, img )
 
 
     ## Save scores for sphere dataset
-    forward_pred_scores.to_csv("./Results/SSIM_PSNR_Scores/sphere/forward_pred_scores.csv")
-    backward_pred_scores.to_csv("./Results/SSIM_PSNR_Scores/sphere/backward_pred_scores.csv")
-    interpolated_frame_scores.to_csv("./Results/SSIM_PSNR_Scores/sphere/interpolated_frame_scores.csv")
+    forward_pred_scores.to_csv("./Results/SSIM_PSNR_Scores/sphere/forward_pred_scores4.csv")
+    backward_pred_scores.to_csv("./Results/SSIM_PSNR_Scores/sphere/backward_pred_scores4.csv")
+    interpolated_frame_scores.to_csv("./Results/SSIM_PSNR_Scores/sphere/interpolated_frame_scores4.csv")
 
